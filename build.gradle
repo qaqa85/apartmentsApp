@@ -1,0 +1,46 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.2'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id "org.flywaydb.flyway" version "9.8.1"
+}
+
+group = 'com.apartments'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'org.postgresql:postgresql'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+}
+
+flyway {
+	url = 'jdbc:postgresql://localhost:5432/apartment-db'
+	user = 'admin'
+	password = 'password'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

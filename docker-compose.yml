@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  apartmentApp:
+    container_name: apartment-app
+    image: postgres:15.1-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: apartment-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - apartmentVol:/var/lib/postgresql/data
+    networks:
+      - net
+
+  #    PG ADMIN
+  pgadmin:
+    container_name: apartment-pgAdmin
+    image: dpage/pgadmin4
+    depends_on:
+      - apartmentApp
+    volumes:
+      - apartment-pgadminVol:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@sii.pl
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "8090:80"
+    networks:
+      - net
+
+volumes:
+  apartmentVol:
+    name: apartment-vol
+  apartment-pgadminVol:
+    name: apartment-pgadmin-vol
+
+networks:
+  net:
+    driver: bridge
