@@ -1,5 +1,6 @@
 package com.apartments.base.apartment.models;
 
+import com.apartments.base.owners.Owner;
 import com.apartments.base.utils.models.Address;
 import jakarta.persistence.*;
 
@@ -19,4 +20,7 @@ public class Apartment {
     @Enumerated(EnumType.STRING)
     private Status status;
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "ownerId")
+    private Owner owner;
 }
