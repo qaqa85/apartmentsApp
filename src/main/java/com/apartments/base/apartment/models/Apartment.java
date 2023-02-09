@@ -1,6 +1,6 @@
 package com.apartments.base.apartment.models;
 
-import com.apartments.base.owners.Owner;
+import com.apartments.base.owner.models.Owner;
 import com.apartments.base.utils.models.Address;
 import jakarta.persistence.*;
 

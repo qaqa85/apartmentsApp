@@ -15,4 +15,4 @@ spring:
     user: admin
     password: password
 server:
-  port: 8081
+  port: 8080
