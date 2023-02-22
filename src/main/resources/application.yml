@@ -16,3 +16,6 @@ spring:
     password: password
 server:
   port: 8080
+springdoc:
+  swagger-ui:
+    path: swagger

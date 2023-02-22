@@ -2,7 +2,7 @@ package com.apartments.base.owner.models;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record NewOwnerDto(
+public record EditOwnerDto (
         @Schema(example = "Adrian",
                 type = "string",
                 requiredMode = Schema.RequiredMode.REQUIRED,
@@ -32,4 +32,5 @@ public record NewOwnerDto(
         @Schema(example = "123",
                 requiredMode = Schema.RequiredMode.REQUIRED)
         String postcode) {
+
 }
