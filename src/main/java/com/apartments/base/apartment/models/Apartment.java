@@ -20,7 +20,7 @@ public class Apartment {
     @Enumerated(EnumType.STRING)
     private Status status;
     private String description;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ownerId")
     private Owner owner;
 }
