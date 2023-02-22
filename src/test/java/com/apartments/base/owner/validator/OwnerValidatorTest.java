@@ -118,6 +118,8 @@ class OwnerValidatorTest {
 
         // WHEN
         var result = new OwnerValidator(owner).validate();
+
+        // THEN
         assertTrue(result.isInvalid());
         assertThat(result.getError()).containsExactly("Invalid city");
     }
@@ -134,6 +136,8 @@ class OwnerValidatorTest {
 
         // WHEN
         var result = new OwnerValidator(owner).validate();
+
+        // THEN
         assertTrue(result.isInvalid());
         assertThat(result.getError()).containsExactly("Invalid street");
     }
@@ -150,6 +154,8 @@ class OwnerValidatorTest {
 
         // WHEN
         var result = new OwnerValidator(owner).validate();
+
+        // THEN
         assertTrue(result.isInvalid());
         assertThat(result.getError()).containsExactly("Invalid postcode");
     }
