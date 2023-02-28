@@ -1,7 +1,7 @@
 package com.apartments.base.owner;
 
 import com.apartments.base.owner.models.Owner;
-import com.apartments.base.utils.models.Address;
+import com.apartments.base.utils.model.Address;
 
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package com.apartments.base.owner.models;
 
 import com.apartments.base.apartment.models.Apartment;
-import com.apartments.base.utils.models.Address;
+import com.apartments.base.utils.model.Address;
 import jakarta.persistence.*;
 import lombok.*;
 

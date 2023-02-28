@@ -1,13 +1,20 @@
 package com.apartments.base.apartment.models;
 
 import com.apartments.base.owner.models.Owner;
-import com.apartments.base.utils.models.Address;
+import com.apartments.base.utils.model.Address;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
+@Builder
+@Getter
+@NoArgsConstructor @AllArgsConstructor
 @Table(name = "apartments")
 public class Apartment {
     @Id

@@ -1,4 +1,4 @@
-package com.apartments.base.utils.models;
+package com.apartments.base.utils.model;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
