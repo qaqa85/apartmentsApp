@@ -1,9 +1,9 @@
 package com.apartments.base.owner.controller;
 
-import com.apartments.base.owner.models.EditOwnerDto;
-import com.apartments.base.owner.models.NewOwnerDto;
+import com.apartments.base.owner.models.dto.EditOwnerDto;
+import com.apartments.base.owner.models.dto.NewOwnerDto;
 import com.apartments.base.owner.service.OwnerService;
-import com.apartments.base.utils.models.ErrorMessage;
+import com.apartments.base.utils.model.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,11 +32,11 @@ class OwnerController {
                     )}
     )
     ResponseEntity<Object> addNewOwner(@RequestBody NewOwnerDto ownerDto) {
-        var result = ownerService.saveOwner(ownerDto);
-        if (result.isInvalid()) {
-            return errorMessageToResponse(result.getError());
+        var response = ownerService.saveOwner(ownerDto);
+        if (response.isInvalid()) {
+            return errorMessageToResponse(response.getError());
         } else {
-            return ResponseEntity.ok(result.get());
+            return ResponseEntity.ok(response.get());
         }
     }
 
@@ -53,13 +53,32 @@ class OwnerController {
                     )}
     )
     ResponseEntity<Object> editOwner(@RequestBody EditOwnerDto editOwnerDto, @RequestParam String id) {
-        var result = ownerService.editOwner(editOwnerDto, id);
-        if (result.isInvalid()) {
-            return errorMessageToResponse(result.getError());
+        var response = ownerService.editOwner(editOwnerDto, id);
+        if (response.isInvalid()) {
+            return errorMessageToResponse(response.getError());
         } else {
             return ResponseEntity.noContent().build();
         }
     }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get single owner",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully executed"),
+                    @ApiResponse(responseCode = "404", description = "Owner not found",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(example = "[Owner not found]"))),
+            }
+    )
+    ResponseEntity<Object> getOwner(@PathVariable(required = false) String id) {
+        var response = ownerService.getOwner(id);
+        if (response.isInvalid()) {
+            return errorMessageToResponse(response.getError());
+        } else {
+            return ResponseEntity.ok(response.get());
+        }
+    }
+
 
     private ResponseEntity<Object> errorMessageToResponse(ErrorMessage errorMessage) {
         return ResponseEntity.status(errorMessage.errorType().code).body(errorMessage.errorMessages());

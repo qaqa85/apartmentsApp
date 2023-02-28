@@ -1,4 +1,4 @@
-package com.apartments.base.utils.models;
+package com.apartments.base.utils.model;
 
 public enum ErrorType {
     BAD_REQUEST(400),
@@ -6,7 +6,7 @@ public enum ErrorType {
 
     public final int code;
 
-    private ErrorType(int code) {
+    ErrorType(int code) {
         this.code = code;
     }
 

@@ -1,11 +1,13 @@
 package com.apartments.base.owner.service;
 
-import com.apartments.base.owner.models.EditOwnerDto;
-import com.apartments.base.owner.models.NewOwnerDto;
+import com.apartments.base.apartment.models.Apartment;
+import com.apartments.base.owner.OwnerBuilderFactory;
+import com.apartments.base.owner.models.dto.EditOwnerDto;
+import com.apartments.base.owner.models.dto.NewOwnerDto;
 import com.apartments.base.owner.models.Owner;
 import com.apartments.base.owner.repository.OwnerRepository;
-import com.apartments.base.utils.models.Address;
-import com.apartments.base.utils.models.ErrorType;
+import com.apartments.base.utils.model.Address;
+import com.apartments.base.utils.model.ErrorType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -176,7 +179,7 @@ class OwnerServiceImplTest {
     @Test
     @DisplayName("should throw nullPointerException when input dto is null")
     void editOwnerShouldThrowNullPointerExceptionWhenInputDtoIsNull() {
-        //GIVEN
+        // GIVEN
         given(ownerRepository.findById(any(UUID.class))).willReturn(Optional.of(OWNER));
 
         // WHEN + THEN
@@ -186,17 +189,56 @@ class OwnerServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("should return owner not found when uuid is invalid")
+    void getOwnerReturnOwnerNotFoundWhenUUIDIsInvalid() {
+        // WHEN
+        var result = ownerService.getOwner("invalidId");
 
-    private final Owner OWNER = Owner.builder()
-            .surname("Damian")
-            .lastname("Tanski")
-            .phoneNumber("999999999")
-            .id(UUID.fromString("8149d8b4-b1ed-11ed-afa1-0242ac120002"))
-            .address(
-                    Address.builder()
-                            .city("Gdansk")
-                            .street("xxx")
-                            .postcode("10999")
-                            .build())
+        // THEN
+        assertTrue(result.isInvalid());
+        assertThat(result.getError().errorMessages()).containsExactly("Owner not found");
+        assertThat(result.getError().errorType()).isEqualTo(ErrorType.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("should return owner not found when owner is not found")
+    void getOwnerShouldReturnOwnerNotFoundWhenOwnerIsNotFound() {
+        // GIVEN
+        given(ownerRepository.getOwnerEagerlyById(any(UUID.class)))
+                .willReturn(Optional.empty());
+
+        // WHEN
+        var result = ownerService.getOwner(OWNER.getId().toString());
+
+        // THEN
+        assertTrue(result.isInvalid());
+        assertThat(result.getError().errorMessages()).containsExactly("Owner not found");
+        assertThat(result.getError().errorType()).isEqualTo(ErrorType.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("should return owner when owner exists")
+    void getOwnerShouldReturnOwnerWhenOwnerExists() {
+        // GIVEN
+        Owner owner = OwnerBuilderFactory.getDefaultOwnerBuilder()
+                .apartments(
+                        List.of(Apartment.builder().id(UUID.randomUUID())
+                                .title("testApartment").build())
+                )
+                .build();
+
+        given(ownerRepository.getOwnerEagerlyById(any(UUID.class))).willReturn(Optional.of(owner));
+
+        // WHEN
+        var result = ownerService.getOwner(owner.getId().toString());
+
+        // THEN
+        assertTrue(result.isValid());
+        assertThat(result.get().phoneNumber()).isEqualTo(owner.getPhoneNumber());
+    }
+
+    private final Owner OWNER = OwnerBuilderFactory
+            .getDefaultOwnerBuilder()
             .build();
 }
