@@ -2,9 +2,9 @@ package com.apartments.base.owner.service;
 
 import com.apartments.base.apartment.models.Apartment;
 import com.apartments.base.owner.OwnerBuilderFactory;
+import com.apartments.base.owner.models.Owner;
 import com.apartments.base.owner.models.dto.EditOwnerDto;
 import com.apartments.base.owner.models.dto.NewOwnerDto;
-import com.apartments.base.owner.models.Owner;
 import com.apartments.base.owner.repository.OwnerRepository;
 import com.apartments.base.utils.model.Address;
 import com.apartments.base.utils.model.ErrorType;

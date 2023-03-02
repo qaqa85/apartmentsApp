@@ -7,5 +7,5 @@ CREATE TABLE apartments (
     price numeric(10,2)  NOT NULL,
     status varchar(20)  NOT NULL,
     description text,
-    PRIMARY KEY(id)
+    PRIMARY KEY(id);
 );

@@ -2,12 +2,14 @@ package com.apartments.base.owner.controller;
 
 import com.apartments.base.owner.models.dto.EditOwnerDto;
 import com.apartments.base.owner.models.dto.NewOwnerDto;
+import com.apartments.base.owner.models.dto.PageFilterSortOwnerDto;
 import com.apartments.base.owner.service.OwnerService;
 import com.apartments.base.utils.model.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +42,7 @@ class OwnerController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "Edit existing owner",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Successfully edited"),
@@ -52,7 +54,7 @@ class OwnerController {
                                     schema = @Schema(example = "[Invalid lastname]"))
                     )}
     )
-    ResponseEntity<Object> editOwner(@RequestBody EditOwnerDto editOwnerDto, @RequestParam String id) {
+    ResponseEntity<Object> editOwner(@RequestBody EditOwnerDto editOwnerDto, @PathVariable(required = false) String id) {
         var response = ownerService.editOwner(editOwnerDto, id);
         if (response.isInvalid()) {
             return errorMessageToResponse(response.getError());
@@ -77,6 +79,16 @@ class OwnerController {
         } else {
             return ResponseEntity.ok(response.get());
         }
+    }
+
+    @GetMapping
+    @Operation(summary = "Get owners by pages",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successfully executed")
+        }
+    )
+    ResponseEntity<Object> getOwners(@Valid PageFilterSortOwnerDto requirements) {
+        return ResponseEntity.ok().body(ownerService.getOwners(requirements));
     }
 
 

@@ -1,17 +1,21 @@
 package com.apartments.base.owner.service;
 
 import com.apartments.base.owner.mapper.OwnerMapper;
-import com.apartments.base.owner.models.*;
-import com.apartments.base.owner.models.dto.AllDetailsOwnerDto;
-import com.apartments.base.owner.models.dto.EditOwnerDto;
-import com.apartments.base.owner.models.dto.NewOwnerDto;
+import com.apartments.base.owner.models.Owner;
+import com.apartments.base.owner.models.dto.*;
 import com.apartments.base.owner.repository.OwnerRepository;
+import com.apartments.base.owner.specification.OwnerSpecifications;
 import com.apartments.base.owner.validator.OwnerValidator;
 import com.apartments.base.utils.model.ErrorMessage;
 import com.apartments.base.utils.model.ErrorType;
 import com.apartments.base.utils.validator.Validator;
 import io.vavr.control.Validation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.apartments.base.utils.Converter.toInt;
+
 @Service
 @RequiredArgsConstructor
 class OwnerServiceImpl implements OwnerService {
     private final OwnerRepository ownerRepository;
+    private final OwnerSpecifications ownerSpecifications;
 
     @Override
     public Validation<ErrorMessage, UUID> saveOwner(NewOwnerDto newOwnerDto) {
@@ -61,6 +68,23 @@ class OwnerServiceImpl implements OwnerService {
                         Validation.invalid(new ErrorMessage(ErrorType.NOT_FOUND, "Owner not found")));
     }
 
+    @Override
+    public Page<SlimOwnerDto> getOwners(@Valid PageFilterSortOwnerDto requirements) {
+        Integer currentPage = toInt(requirements.getPageNumber())
+                .filter(pageNumber -> pageNumber >= 0)
+                .orElse(0);
+        Integer totalElementsOnPage = toInt(requirements.getPageSize())
+                .filter(totalElements -> totalElements > 0 && totalElements <= 20)
+                .orElse(20);
+
+        Pageable page = PageRequest.of(currentPage, totalElementsOnPage);
+
+        return ownerRepository.findAll(
+                combinedSpecification(requirements.getSurname(), requirements.getLastname(), requirements.getCity()),
+                page
+        ).map(OwnerMapper::toSlimOwnerDto);
+    }
+
     private Validation<List<String>, Owner> validateOwner(EditOwnerDto editOwnerDto) {
         return Optional.ofNullable(editOwnerDto)
                 .map(OwnerMapper::toOwner)
@@ -92,8 +116,13 @@ class OwnerServiceImpl implements OwnerService {
                 .map(UUID::fromString);
     }
 
-
     private Validation<List<String>, Owner> checkOwner(Owner owner) {
         return new OwnerValidator(owner).validate();
+    }
+
+    private Specification<Owner> combinedSpecification(String surname, String lastname, String city) {
+        return Specification.where(ownerSpecifications.mathSurname(surname))
+                .and(ownerSpecifications.mathLastName(lastname))
+                .and(ownerSpecifications.city(city));
     }
 }
