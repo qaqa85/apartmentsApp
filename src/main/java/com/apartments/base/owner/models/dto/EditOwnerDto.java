@@ -32,5 +32,4 @@ public record EditOwnerDto(
         @Schema(example = "123",
                 requiredMode = Schema.RequiredMode.REQUIRED)
         String postcode) {
-
 }

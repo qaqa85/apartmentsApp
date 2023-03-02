@@ -7,6 +7,7 @@ import com.apartments.base.owner.models.dto.AllDetailsOwnerDto;
 import com.apartments.base.owner.models.dto.EditOwnerDto;
 import com.apartments.base.owner.models.dto.NewOwnerDto;
 import com.apartments.base.owner.models.Owner;
+import com.apartments.base.owner.models.dto.SlimOwnerDto;
 import com.apartments.base.utils.model.Address;
 
 import java.util.Collection;
@@ -63,6 +64,18 @@ public class OwnerMapper {
                 owner.getPhoneNumber(),
                 owner.getAddress(),
                 toWithoutOwnersApartmentDtosList(owner.getApartments())
+        );
+    }
+
+    public static SlimOwnerDto toSlimOwnerDto(Owner owner) {
+        Objects.requireNonNull(owner, "Input cannot be null");
+        Objects.requireNonNull(owner.getAddress(), "Owner address cannot be null");
+
+        return new SlimOwnerDto(
+                owner.getId(),
+                owner.getSurname(),
+                owner.getLastname(),
+                owner.getAddress().getCity()
         );
     }
 
